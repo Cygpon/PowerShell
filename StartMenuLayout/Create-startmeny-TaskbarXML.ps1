@@ -31,12 +31,11 @@ function WriteShellXML {
 
     $writer.WriteStartElement("defaultlayout", "StartLayout", "http://schemas.microsoft.com/Start/2014/FullDefaultLayout")
     $writer.WriteAttributeString("GroupCellWidth", "6")
+    $writer.WriteStartElement("taskbar", "taskbarlayout", "http://schemas.microsoft.com/Start/2014/TaskbarLayout")
     
 }
 function writeTaskbarShellXML{ 
-   $writer.WriteStartElement("CustomTaskbarLayoutCollection")
-   $writer.WriteAttributeString("PinListPlacement", "replace")
-    
+   
     
     $writer.WriteStartElement("defaultlayout", "TaskbarLayout", "http://schemas.microsoft.com/Start/2014/TaskbarLayout")
 
@@ -130,6 +129,7 @@ if ($Group1) {
 
     # Call function to write XML shell
     WriteShellXML
+  #  writeTaskbarShellXML
     
     # Call function to write tile XML elements
     WriteTileXML -Group 1
@@ -146,13 +146,9 @@ if ($Group1) {
 
 }
 
-function WriteTaskBarXML ($Group) {
+function WriteTaskBarXML ($TaskBarlayout) {
     
-    switch ($Group) {
-
-        1 {$GroupNumber = $TaskBarlayout}
-      #  2 {$GroupNumber = $Group2}
-    }
+  
     
     # Get the list of apps for the designated group
     $GroupApps = Get-Content -Path $LayoutPath\$($taskbarlayout)
@@ -216,20 +212,10 @@ if ($TaskbarLayout) {
     $writer = [system.xml.XmlWriter]::Create($XmlPath, $settings)
 
     # Call function to write XML shell
-    WriteTaskbarShellXML
+    #WriteTaskbarShellXML
     
     # Call function to write tile XML elements
-    WriteTaskBarXML -Group 1
-
-    # Only executed if Group 2 exists
-    if ($Group2) {
-        
-        # Write additional end element for Group 1
-        
-
-        #WriteTaskBarXML -Group 2
-        $writer.WriteEndElement()
-    }
+    WriteTaskBarXML $TaskBarlayout
     
     # Flush the XML writer and close the file     
     $writer.Flush() 
